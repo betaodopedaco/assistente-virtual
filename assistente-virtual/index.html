@@ -1,233 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistente Virtual - Demo</title>
-    <script src="./assistente-virtual.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: #0a0a0a;
-            color: white;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-        }
-        
-        .demo-header {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: linear-gradient(135deg, #000000, #1a1a2e);
-            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .demo-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #00ffff, transparent);
-            box-shadow: 0 0 20px #00ffff;
-        }
-        
-        .demo-header h1 {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-            font-weight: 300;
-        }
-        
-        .demo-header p {
-            color: #888;
-            font-size: 1.2rem;
-            font-weight: 300;
-        }
-        
-        .demo-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .instructions {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 2rem;
-            border-radius: 1rem;
-            margin-bottom: 3rem;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
-        }
-        
-        .instructions h3 {
-            color: #00ffff;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            font-weight: 300;
-        }
-        
-        .code-block {
-            background: #000;
-            border: 1px solid #333;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            color: #00ff88;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-        }
-        
-        .feature-card h4 {
-            color: #00ffff;
-            margin-bottom: 0.5rem;
-            font-weight: 300;
-        }
-        
-        .feature-card p {
-            color: #888;
-            font-size: 0.9rem;
-        }
-        
-        .usage-examples {
-            margin-top: 2rem;
-        }
-        
-        .example {
-            background: rgba(0, 0, 0, 0.5);
-            border-left: 3px solid #00ffff;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 0 0.5rem 0.5rem 0;
-        }
-        
-        @media (max-width: 768px) {
-            .demo-header h1 {
-                font-size: 2rem;
-            }
-            
-            .demo-header p {
-                font-size: 1rem;
-            }
-            
-            .demo-content {
-                padding: 1rem;
-            }
-            
-            .instructions {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assistente Virtual</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: #000; 
+      color: white; 
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      padding: 20px;
+      background: #111;
+    }
+    .messages {
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 5px;
+    }
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .user { background: #003333; text-align: right; }
+    .ai { background: #330033; }
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      background: #222;
+      border: 1px solid #00ffff;
+      border-radius: 5px;
+      color: white;
+    }
+    button {
+      padding: 10px 20px;
+      background: #00ffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="demo-header">
-        <h1>🤖 Assistente Virtual Premium</h1>
-        <p>Componente Web Reutilizável com Design Futurista</p>
+  <div class="chat-container">
+    <h2>Assistente Virtual</h2>
+    <div class="messages" id="messages"></div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Digite sua mensagem...">
+      <button onclick="sendMessage()">Enviar</button>
     </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const messages = document.getElementById('messages');
+      const userMessage = input.value.trim();
+      
+      if (!userMessage) return;
+      
+      // Adiciona mensagem do usuário
+      const userDiv = document.createElement('div');
+      userDiv.className = 'message user';
+      userDiv.textContent = userMessage;
+      messages.appendChild(userDiv);
+      
+      input.value = '';
+      
+      // Simula resposta da IA
+      setTimeout(() => {
+        const aiDiv = document.createElement('div');
+        aiDiv.className = 'message ai';
+        aiDiv.textContent = 'Esta é uma resposta simulada da IA. Configure sua API real.';
+        messages.appendChild(aiDiv);
+        messages.scrollTop = messages.scrollHeight;
+      }, 1000);
+    }
     
-    <div class="demo-content">
-        <div class="instructions">
-            <h3>🚀 Como Usar em Seu Site</h3>
-            <p>Adicione este código ao seu HTML:</p>
-            
-            <div class="code-block">
-&lt;!-- Importe o componente --&gt;<br>
-&lt;script src="https://SEU-USUARIO.github.io/assistente-virtual/assistente-virtual.js"&gt;&lt;/script&gt;<br>
-<br>
-&lt;!-- Use o componente --&gt;<br>
-&lt;assistente-virtual&gt;&lt;/assistente-virtual&gt;
-            </div>
-            
-            <p><strong>Substitua "SEU-USUARIO" pelo seu nome de usuário do GitHub!</strong></p>
-        </div>
-
-        <div class="features">
-            <div class="feature-card">
-                <h4>🎨 Design Futurista</h4>
-                <p>Interface com efeitos visuais impressionantes e tema escuro</p>
-            </div>
-            <div class="feature-card">
-                <h4>📱 Responsivo</h4>
-                <p>Funciona perfeitamente em desktop e mobile</p>
-            </div>
-            <div class="feature-card">
-                <h4>💾 Histórico Local</h4>
-                <p>Salva automaticamente suas conversas</p>
-            </div>
-            <div class="feature-card">
-                <h4>⚡ Fácil Integração</h4>
-                <p>Uma linha de código para adicionar ao seu site</p>
-            </div>
-        </div>
-
-        <div class="usage-examples">
-            <h3 style="color: #00ffff; margin-bottom: 1rem;">🎯 Exemplos de Uso</h3>
-            
-            <div class="example">
-                <strong>Básico:</strong>
-                <div class="code-block">
-&lt;assistente-virtual&gt;&lt;/assistente-virtual&gt;
-                </div>
-            </div>
-            
-            <div class="example">
-                <strong>Personalizado:</strong>
-                <div class="code-block">
-&lt;assistente-virtual<br>
-&nbsp;&nbsp;title="MEU ASSISTENTE"<br>
-&nbsp;&nbsp;subtitle="Suporte 24/7 • IA Personalizada"<br>
-&nbsp;&nbsp;api-url="https://meubackend.com/api/chat"<br>
-&gt;&lt;/assistente-virtual&gt;
-                </div>
-            </div>
-        </div>
-
-        <!-- Componente em Ação -->
-        <div style="margin-top: 3rem;">
-            <h3 style="color: #00ffff; text-align: center; margin-bottom: 2rem;">🎮 Demonstração ao Vivo</h3>
-            <assistente-virtual></assistente-virtual>
-        </div>
-    </div>
-
-    <script>
-        // Atualiza automaticamente o código de exemplo com a URL correta
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentUrl = window.location.origin;
-            const codeBlocks = document.querySelectorAll('.code-block');
-            
-            codeBlocks.forEach(block => {
-                block.textContent = block.textContent.replace('SEU-USUARIO', 
-                    currentUrl.includes('github.io') 
-                    ? currentUrl.split('.')[0].split('//')[1]
-                    : 'SEU-USUARIO'
-                );
-            });
-        });
-    </script>
+    // Enter para enviar
+    document.getElementById('userInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
 </body>
 </html>
